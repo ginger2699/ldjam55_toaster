@@ -1,19 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class DemonProfile : MonoBehaviour
+public class DemonProfile
 {
     public string d_name;
     public int age;
     public int[] sins = new int[7];
+    public Image profile_img;
 
     // Start is called before the first frame update
     void Start()
     {
+
+    }
+
+    public void GenerateSinsLevels(){
+        int i = 0;
         foreach (int sin in sins)
         {
-            sins[sin] = Random.Range(1, 11);
+            i++;
+            sins[sin] = UnityEngine.Random.Range(1, 11);
+            Debug.Log("Sins number " + i + " value: " + sins[sin]);
         }
     }
 
