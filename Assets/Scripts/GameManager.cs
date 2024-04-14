@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -33,14 +34,30 @@ public class GameManager : MonoBehaviour
 
     public int pointsTotal;
     public int pointsRound;
-
+    //for sin levels
+    public GameObject CubePrefab;
+    public List<GameObject> demons_sins;
+    //ui cards
     public List<GameObject> demons_cards;
+    //profile of demons
     public List<DemonProfile> demons_profile;
-    public List<Couple> couples;
+    //public List<Couple> couples;
+
+    public List<Color> colors = new List<Color>();
     public enum Sin { wrath, gluttony, greed, pride, lust, envy, sloth};
     // Start is called before the first frame update
     void Start()
     {
+        //insert color
+        // Add the colors to the list
+        colors.Add(new Color(189f / 255f, 15f / 255f, 15f / 255f)); // WRATH
+        colors.Add(new Color(220f / 255f, 94f / 255f, 24f / 255f)); // GLUT
+        colors.Add(new Color(219f / 255f, 188f / 255f, 24f / 255f)); // GREED
+        colors.Add(new Color(145f / 255f, 63f / 255f, 196f / 255f)); // PRIDE
+        colors.Add(new Color(219f / 255f, 43f / 255f, 127f / 255f)); // LUST
+        colors.Add(new Color(20f / 255f, 197f / 255f, 80f / 255f)); // ENVY
+        colors.Add(new Color(16f / 255f, 131f / 255f, 180f / 255f)); // SLOTH
+
         demons_profile = new List<DemonProfile>();
         StartRound();
     }
@@ -61,7 +78,21 @@ public class GameManager : MonoBehaviour
             newDemon.GenerateSinsLevels();
             demons_cards[i].GetComponent<DemonCard>().d_profile = newDemon;
             demons_cards[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = (newDemon.d_name); 
-            demons_cards[i].transform.GetChild(3).gameObject.GetComponent<TMP_Text>().text = ("Age: " + newDemon.age.ToString()); 
+            demons_cards[i].transform.GetChild(3).gameObject.GetComponent<TMP_Text>().text = ("Age: " + newDemon.age.ToString());
+            
+            //show graphic sins levels
+            for (int j = 0; j < 7; j++)
+            {
+                int current_level = newDemon.sins[j];
+                GameObject current_sin = demons_sins[i].transform.GetChild(j).gameObject;
+                Color current_color = colors[j];
+                for (int k = 1; k < current_level; k++)
+                {
+                    GameObject cube = Instantiate(CubePrefab, new Vector3(0, 0, 0), Quaternion.identity, current_sin.transform);
+                    cube.GetComponent<Image>().color = current_color;
+                }
+                //demons_sins[i].transform.GetChild(j).gameObject.GetComponent<TMP_Text>().text = newDemon.sins[j].ToString();
+            }
         }
 
     }

@@ -6,8 +6,8 @@ using UnityEngine.EventSystems;
 public class DescriptionTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public void OnPointerEnter(PointerEventData eventData)
-    {
-        DescriptionManager.Show();
+    {        
+        DescriptionManager.Show(transform.GetSiblingIndex());
     }
 
     public void OnPointerExit(PointerEventData eventData)
