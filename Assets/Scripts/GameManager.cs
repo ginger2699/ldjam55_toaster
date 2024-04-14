@@ -77,8 +77,8 @@ public class GameManager : MonoBehaviour
  
             newDemon.GenerateSinsLevels();
             demons_cards[i].GetComponent<DemonCard>().d_profile = newDemon;
-            demons_cards[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = (newDemon.d_name); 
-            demons_cards[i].transform.GetChild(3).gameObject.GetComponent<TMP_Text>().text = ("Age: " + newDemon.age.ToString());
+            demons_cards[i].transform.GetChild(1).gameObject.GetComponent<TMP_Text>().text = (newDemon.d_name); 
+            demons_cards[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = ("Age: " + newDemon.age.ToString());
             
             //show graphic sins levels
             for (int j = 0; j < 7; j++)
