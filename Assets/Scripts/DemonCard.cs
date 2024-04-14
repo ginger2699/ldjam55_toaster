@@ -10,8 +10,8 @@ public class DemonCard : MonoBehaviour
     public DemonProfile d_profile;
 
     public GameObject matchedDemon;
-    private static List<Color> coloredPairs = new List<Color>();
-    private int indexColor;
+    private static List<Color> coloredPairs = new List<Color>() { Color.yellow, Color.magenta, Color.cyan, Color.blue};
+    private int indexColor= 0;
     private bool isSelected = false;
     private bool isPaired = false;
     private Image image;
@@ -55,6 +55,9 @@ public class DemonCard : MonoBehaviour
             matchedDemon = null;
             isPaired = false;
             isSelected = false;
+            //add color back into the list
+            coloredPairs.Add(gameObject.GetComponent<Image>().color);
+            
             gameObject.GetComponent<Image>().color = Color.white;
 
             //graphic effect
@@ -70,8 +73,9 @@ public class DemonCard : MonoBehaviour
                 selectedCards[0].isPaired = true;
                 matchedDemon = selectedCards[0].gameObject;
                 selectedCards[0].matchedDemon = this.gameObject;
-                gameObject.GetComponent<Image>().color = Color.red;
-                matchedDemon.GetComponent<Image>().color = Color.red;
+                gameObject.GetComponent<Image>().color = coloredPairs[0];
+                matchedDemon.GetComponent<Image>().color = coloredPairs[0];
+                coloredPairs.RemoveAt(0);
                 selectedCards.Clear(); // Clear selected cards
             }
         }
