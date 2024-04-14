@@ -11,6 +11,8 @@ public class DescriptionManager : MonoBehaviour
     private void Awake()
     {
         current = this;
+        current.gameObject.SetActive(false);
+
     }
 
     public static void Show()
