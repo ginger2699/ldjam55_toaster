@@ -11,9 +11,9 @@ public class DemonCard : MonoBehaviour
 
     public GameObject matchedDemon;
     private static List<Color> coloredPairs = new List<Color>() { Color.yellow, Color.magenta, Color.cyan, Color.blue};
-    private int indexColor= 0;
+    //private int indexColor= 0;
     private bool isSelected = false;
-    private bool isPaired = false;
+    public bool isPaired = false;
     private Image image;
     private static List<DemonCard> selectedCards = new List<DemonCard>();
 

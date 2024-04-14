@@ -20,10 +20,11 @@ public class DemonProfile
         int i = 0;
         foreach (int sin in sins)
         {
+            sins[i] = UnityEngine.Random.Range(1, 11);
             i++;
-            sins[sin] = UnityEngine.Random.Range(1, 11);
-            Debug.Log("Sins number " + i + " value: " + sins[sin]);
+            
         }
+        Debug.Log("Sins: " + sins[0].ToString() + ", " + sins[1].ToString() + ", " + sins[2].ToString() + ", " + sins[3].ToString() + ", " + sins[4].ToString() + ", " + sins[5].ToString() + ", " + sins[6].ToString());
     }
 
     // Update is called once per frame

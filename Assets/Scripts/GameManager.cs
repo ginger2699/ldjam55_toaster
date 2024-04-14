@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> demons_cards;
     public List<DemonProfile> demons_profile;
     public List<Couple> couples;
-    public enum Sin { sloth, pride, wrath, greed, lust, envy, gluttony};
+    public enum Sin { wrath, gluttony, greed, pride, lust, envy, sloth};
     // Start is called before the first frame update
     void Start()
     {
@@ -60,11 +61,11 @@ public class GameManager : MonoBehaviour
             newDemon.GenerateSinsLevels();
             demons_cards[i].GetComponent<DemonCard>().d_profile = newDemon;
             demons_cards[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = (newDemon.d_name); 
-            demons_cards[i].transform.GetChild(3).gameObject.GetComponent<TMP_Text>().text += (": " + newDemon.age.ToString()); 
+            demons_cards[i].transform.GetChild(3).gameObject.GetComponent<TMP_Text>().text = ("Age: " + newDemon.age.ToString()); 
         }
 
     }
-    public int CalculateMatch(DemonProfile demon1, DemonProfile demon2){
+    public int CalculateMatchOld(DemonProfile demon1, DemonProfile demon2){
 
         double matchLevel = 0;
 
@@ -73,6 +74,87 @@ public class GameManager : MonoBehaviour
         }
         matchLevel = Math.Floor(100-matchLevel);
         return (int)matchLevel;
+    }
+
+    public float CalculateMatch()
+    {
+        pointsRound = 0;
+        List<DemonProfile> demons_selected = new List<DemonProfile>();
+        for(int i = 0;i< demons_cards.Count; i++)
+        {
+            DemonCard current_card = demons_cards[i].GetComponent<DemonCard>();
+            if (demons_selected.Find(x => x == current_card.d_profile) == null)
+            {
+                demons_selected.Add(current_card.d_profile);
+                demons_selected.Add(current_card.matchedDemon.GetComponent<DemonCard>().d_profile);
+                int matchability = matchMaking(current_card.d_profile.sins.ToList(), demons_selected[demons_selected.Count-1].sins.ToList());
+                Debug.Log("Matchability: " + matchability);
+                pointsRound += matchability;
+            }
+        }
+
+        return 2f;
+    }
+    public void StartSummonDate()
+    {
+        if (CanStartSummon())
+        {
+            Debug.Log("Starting summon date");
+            CalculateMatch();
+        }
+        else {
+            Debug.Log("Not all demons are paired");
+        }
+    }
+    public bool CanStartSummon()
+    {
+        return demons_cards.FindAll(x => x.GetComponent<DemonCard>().isPaired == false).Count == 0;
+    }
+    int matchMaking(List<int> demon1, List<int> demon2)
+    {
+        int match = 0;
+
+        //public enum Sin { Pigrizia, Superbia, Ira, Avidit�, Lussuria, Invidia, Gola };
+
+        //First Rule
+        // Rule matching gluttony: high gluttony goes with high gluttony (same with low)
+        match += 10 - Math.Abs(demon1[6] - demon2[6]);
+
+        //Second Rule
+        // Rule for Superbia: high pride goes with low pride and viceversa 
+        match += Math.Abs(demon1[1] - demon2[1]) + 1;
+
+        //Third Rule
+        // Rule for Wrath: high wrath goes with low wrath and viceversa
+        match += Math.Abs(demon1[2] - demon2[2]) + 1;
+
+        //Fourth Rule
+        // Rule for Lussuria: high lust goes with high lust (same with low)
+        match += 10 - Math.Abs(demon1[4] - demon2[4]);
+
+        //Fifth Rule
+        // Rule for Invidia: high envy goes with high envy (same with low)
+        match += 10 - Math.Abs(demon1[5] - demon2[5]);
+
+        //sixth Rule
+        // Rule for Invidia e Avidit�: high greed goes with low envy and high envy goes with low greed
+        int six_rule_1half = (Math.Abs(demon1[5] - demon2[3]) + 1) / 2;
+        int six_rule_2half = (Math.Abs(demon2[5] - demon1[3]) + 1) / 2;
+        match += six_rule_1half + six_rule_2half;
+
+        //seventh Rule
+        // Rule for Lussuria e Pigrizia: high lust goes with low sloth and high sloth goes with low lust
+        int sev_rule_1half = (Math.Abs(demon1[0] - demon2[4]) + 1) / 2;
+        int sev_rule_2half = (Math.Abs(demon2[0] - demon1[4]) + 1) / 2;
+        match += sev_rule_1half + sev_rule_2half;
+
+
+        // Normalize the match value to 100%
+        double normalizedMatch = (double)match / 70 * 100;
+
+        return (int)normalizedMatch;
+
+
     }
 
 
