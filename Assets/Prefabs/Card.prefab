@@ -224,6 +224,7 @@ GameObject:
   - component: {fileID: 5159721201867279593}
   - component: {fileID: 6501005191058325726}
   - component: {fileID: 514216242248871237}
+  - component: {fileID: 8626878446567950731}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
