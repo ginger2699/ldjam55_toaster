@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PartTypes : MonoBehaviour
+public class GeneratePropicParts : MonoBehaviour
 {
     private enum PartType
     {
@@ -27,6 +27,7 @@ public class PartTypes : MonoBehaviour
     private int numParts = 0;
     private int curPartNumber = 0;
     private bool isGreg = false;
+    private bool drawGreg = false;
 
 
     public void Start()
@@ -69,18 +70,14 @@ public class PartTypes : MonoBehaviour
                 isGreg = true;
                 break;
         }
-
-        GeneratePropics();
     }
 
-    public void Update()
+    public void setGreg(bool value)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            GeneratePropics();
-        }
+        drawGreg = value;
     }
-    private void GeneratePropics()
+
+    public void GeneratePropics()
     {
         if (!isGreg)
         {
@@ -95,7 +92,7 @@ public class PartTypes : MonoBehaviour
         }
         else
         {
-            if (Random.Range(0, 100) == 0)
+            if (drawGreg)
                 sb.Append("greg");
             else
                 sb.Append("default");

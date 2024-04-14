@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using System.Linq;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
@@ -63,12 +64,13 @@ public class GameManager : MonoBehaviour
     }
     public void StartRound()
     {
-        List<int> randomIndices = GenerateRandomIndices(0, demonNames.Count, 8);
+        //List<int> randomIndices = GenerateRandomIndices(0, demonNames.Count, 8);
         for(int i = 0; i < 8; i++)
         {
             DemonProfile newDemon = new DemonProfile();
-            newDemon.d_name = demonNames[randomIndices[i]];
-            newDemon.age = UnityEngine.Random.Range(20,7000);
+            newDemon.Init();
+            //newDemon.d_name = demonNames[randomIndices[i]];
+            //newDemon.age = UnityEngine.Random.Range(20,7000);
 
             demons_profile.Add(newDemon); 
 
@@ -78,7 +80,13 @@ public class GameManager : MonoBehaviour
             newDemon.GenerateSinsLevels();
             demons_cards[i].GetComponent<DemonCard>().d_profile = newDemon;
             demons_cards[i].transform.GetChild(1).gameObject.GetComponent<TMP_Text>().text = (newDemon.d_name); 
-            demons_cards[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = ("Age: " + newDemon.age.ToString());
+            demons_cards[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = ("Age: " + newDemon.age);
+            if (newDemon.isGreg)
+                demons_cards[i].transform.GetChild(10).gameObject.GetComponent<GeneratePropicParts>().setGreg(true);
+            else
+                demons_cards[i].transform.GetChild(10).gameObject.GetComponent<GeneratePropicParts>().setGreg(false);
+            for (int propicPart = 3; propicPart < 11; propicPart++)
+                demons_cards[i].transform.GetChild(propicPart).gameObject.GetComponent<GeneratePropicParts>().GeneratePropics();
             
             //show graphic sins levels
             for (int j = 0; j < 7; j++)
@@ -96,6 +104,7 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
     public int CalculateMatchOld(DemonProfile demon1, DemonProfile demon2){
 
         double matchLevel = 0;
@@ -197,9 +206,10 @@ public class GameManager : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Space))
+            StartRound();
     }
 
     // Function to generate random indices within a range
@@ -217,57 +227,57 @@ public class GameManager : MonoBehaviour
         }
         return indices;
     }
-    List<string> demonNames = new List<string>
-    {
-        "Azazel",
-        "Belial",
-        "Abaddon",
-        "Mephistopheles",
-        "Lucifer",
-        "Beelzebub",
-        "Leviathan",
-        "Lilith",
-        "Asmodeus",
-        "Belphegor",
-        "Mammon",
-        "Moloch",
-        "Nybbas",
-        "Astaroth",
-        "Behemoth",
-        "Beherit",
-        "Raum",
-        "Baal",
-        "Marchosias",
-        "Barbatos",
-        "Gremory",
-        "Berith",
-        "Malphas",
-        "Marbas",
-        "Shax",
-        "Orobas",
-        "Agares",
-        "Buer",
-        "Sitri",
-        "Vassago",
-        "Zepar",
-        "Dantalion",
-        "Furfur",
-        "Vine",
-        "Gaap",
-        "Haures",
-        "Paimon",
-        "Sallos",
-        "Vepar",
-        "Ronove",
-        "Glasya-Labolas",
-        "Crocell",
-        "Furcas",
-        "Ipos",
-        "Sabnock",
-        "Andras",
-        "Forneus",
-        "Shax",
-        "Vapula",
-        "Zagan"
-    };
+    //List<string> demonNames = new List<string>
+    //{
+    //    "Azazel",
+    //    "Belial",
+    //    "Abaddon",
+    //    "Mephistopheles",
+    //    "Lucifer",
+    //    "Beelzebub",
+    //    "Leviathan",
+    //    "Lilith",
+    //    "Asmodeus",
+    //    "Belphegor",
+    //    "Mammon",
+    //    "Moloch",
+    //    "Nybbas",
+    //    "Astaroth",
+    //    "Behemoth",
+    //    "Beherit",
+    //    "Raum",
+    //    "Baal",
+    //    "Marchosias",
+    //    "Barbatos",
+    //    "Gremory",
+    //    "Berith",
+    //    "Malphas",
+    //    "Marbas",
+    //    "Shax",
+    //    "Orobas",
+    //    "Agares",
+    //    "Buer",
+    //    "Sitri",
+    //    "Vassago",
+    //    "Zepar",
+    //    "Dantalion",
+    //    "Furfur",
+    //    "Vine",
+    //    "Gaap",
+    //    "Haures",
+    //    "Paimon",
+    //    "Sallos",
+    //    "Vepar",
+    //    "Ronove",
+    //    "Glasya-Labolas",
+    //    "Crocell",
+    //    "Furcas",
+    //    "Ipos",
+    //    "Sabnock",
+    //    "Andras",
+    //    "Forneus",
+    //    "Shax",
+    //    "Vapula",
+    //    "Zagan"
+    //};
 }
