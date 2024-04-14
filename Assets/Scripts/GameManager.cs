@@ -5,6 +5,8 @@ using UnityEngine;
 using TMPro;
 using System.Linq;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
@@ -34,6 +36,7 @@ public class GameManager : MonoBehaviour
 
     public int pointsTotal;
     public int pointsRound;
+    public GameObject pointsPanel;
     //for sin levels
     public GameObject CubePrefab;
     public List<GameObject> demons_sins;
@@ -107,8 +110,9 @@ public class GameManager : MonoBehaviour
         return (int)matchLevel;
     }
 
-    public float CalculateMatch()
+    public IEnumerator CalculateMatchCoroutine()
     {
+        pointsPanel.SetActive(true);
         pointsRound = 0;
         List<DemonProfile> demons_selected = new List<DemonProfile>();
         for(int i = 0;i< demons_cards.Count; i++)
@@ -120,18 +124,23 @@ public class GameManager : MonoBehaviour
                 demons_selected.Add(current_card.matchedDemon.GetComponent<DemonCard>().d_profile);
                 int matchability = matchMaking(current_card.d_profile.sins.ToList(), demons_selected[demons_selected.Count-1].sins.ToList());
                 Debug.Log("Matchability: " + matchability);
+                pointsPanel.transform.GetChild(i + 1).gameObject.SetActive(true);
+                pointsPanel.transform.GetChild(i+1).gameObject.GetComponent<TMP_Text>().text = (i+1).ToString()+ "° Couple: " + matchability.ToString() + "% match";
                 pointsRound += matchability;
+                yield return new WaitForSeconds(1.5f); // Wait for 1.5 seconds
             }
         }
 
-        return 2f;
+        pointsPanel.transform.GetChild(5).gameObject.SetActive(true);
+        pointsPanel.transform.GetChild(5).gameObject.GetComponent<TMP_Text>().text = "Final Score: " + pointsRound.ToString();
     }
     public void StartSummonDate()
     {
         if (CanStartSummon())
         {
             Debug.Log("Starting summon date");
-            CalculateMatch();
+            StartCoroutine(CalculateMatchCoroutine());
+
         }
         else {
             Debug.Log("Not all demons are paired");
@@ -141,54 +150,166 @@ public class GameManager : MonoBehaviour
     {
         return demons_cards.FindAll(x => x.GetComponent<DemonCard>().isPaired == false).Count == 0;
     }
+
+    public int returnPointsHighAndHigh(int value1Demon, int value2Demon)
+    {
+       if (Math.Abs(value1Demon - value2Demon) < 3)
+        {
+            return 20;
+        }
+        else if (Math.Abs(value1Demon - value2Demon) > 8)
+        {
+            return -5;
+        }
+        else
+        {
+            return 10 - Math.Abs(value1Demon - value2Demon);
+        }
+    }
+    public int returnPointsHighandLow(int value1Demon, int value2Demon)
+    {
+        if (Math.Abs(value1Demon - value2Demon) > 8)
+        {
+           return 20;
+        }
+        else if (Math.Abs(value1Demon - value2Demon) < 3)
+        {
+            return -5;
+        }
+        else
+        {
+            return Math.Abs(value1Demon - value2Demon) + 1;
+        }
+    }
+
     int matchMaking(List<int> demon1, List<int> demon2)
     {
         int match = 0;
         Debug.Log("Inizio match:");
-        //public enum Sin { Pigrizia, Superbia, Ira, Avidit�, Lussuria, Invidia, Gola };
+
+        //public enum Sin { wrath, gluttony, greed, pride, lust, envy, sloth};
+        //First Rule
+        // Rule matching envy: high envy goes with high envy (same with low)
+        match += returnPointsHighAndHigh(demon1[5], demon2[5]);
+        Debug.Log(match);
+
+        //Second Rule
+        // Rule for wrath e pride: high wrath goes with high pride and high pride goes with high wrath
+        int sec_rule_1half = returnPointsHighAndHigh(demon1[0], demon2[3]) / 2;
+        int sec_rule_2half = returnPointsHighAndHigh(demon2[0], demon1[3]) / 2;
+        match += sec_rule_1half + sec_rule_2half;
+        Debug.Log(match);
+
+        //third Rule
+        // Rule for gluttony e greed: high gluttony goes with low greed and high greed goes with low gluttony
+        int third_rule_1half = returnPointsHighandLow(demon1[1], demon2[2]) / 2;
+        int third_rule_2half = returnPointsHighandLow(demon2[1], demon1[2]) / 2;
+        match += third_rule_1half + third_rule_2half;
+        Debug.Log(match);
+
+        //Fourth Rule
+        // Rule for sloth e lust: high sloth goes with low lust and high lust goes with low sloth
+        int fourth_rule_1half = returnPointsHighandLow(demon1[6], demon2[4]) / 2;
+        int fourth_rule_2half = returnPointsHighandLow(demon2[6], demon1[4]) / 2;
+        match += fourth_rule_1half + fourth_rule_2half;
+        Debug.Log(match);
+
+
+        // Normalize the match value to 100%
+        double normalizedMatch = (match * 100) / 40;
+        Debug.Log(normalizedMatch);
+
+        if (normalizedMatch > 100)
+        {
+            return 100;
+        }
+
+        return (int)normalizedMatch;
+
+    }
+    int matchMaking1(List<int> demon1, List<int> demon2)
+    {
+        int match = 0;
+        Debug.Log("Inizio match:");
+        
 
         //First Rule
         // Rule matching gluttony: high gluttony goes with high gluttony (same with low)
-        match += 10 - Math.Abs(demon1[6] - demon2[6]);
+        if (Math.Abs(demon1[1] - demon2[1])<3)
+        {
+            match += 20;
+        }
+        else if (Math.Abs(demon1[1] - demon2[1]) > 8)
+        {
+            match -= 5;
+        }
+        else
+        {
+            match += 10 - Math.Abs(demon1[1] - demon2[1]);
+        }
         Debug.Log(match);
 
         //Second Rule
         // Rule for Superbia: high pride goes with low pride and viceversa 
-        match += Math.Abs(demon1[1] - demon2[1]) + 1;
+        if (Math.Abs(demon1[1] - demon2[1]) > 8 )
+        {
+            match += 20;
+        }
+        else if (Math.Abs(demon1[1] - demon2[1]) < 3)
+        {
+            match -= 5;
+        }
+        else
+        {
+            match += Math.Abs(demon1[1] - demon2[1]);
+        }
         Debug.Log(match);
+
+        //public enum Sin { wrath, gluttony, greed, pride, lust, envy, sloth};
 
         //Third Rule
         // Rule for Wrath: high wrath goes with low wrath and viceversa
-        match += Math.Abs(demon1[2] - demon2[2]) + 1;
-        Debug.Log(match);
+        //match += Math.Abs(demon1[0] - demon2[0]) + 1;
+        //Debug.Log(match);
 
         //Fourth Rule
         // Rule for Lussuria: high lust goes with high lust (same with low)
-        match += 10 - Math.Abs(demon1[4] - demon2[4]);
+        if (Math.Abs(demon1[4] - demon2[4]) < 3)
+        {
+            match += 20;
+        }
+        else if (Math.Abs(demon1[4] - demon2[4]) > 8)
+        {
+            match -= 5;
+        }
+        else
+        {
+            match += 10 -Math.Abs(demon1[4] - demon2[4]);
+        }
         Debug.Log(match);
 
         //Fifth Rule
         // Rule for Invidia: high envy goes with high envy (same with low)
-        match += 10 - Math.Abs(demon1[5] - demon2[5]);
-        Debug.Log(match);
+        //match += 10 - Math.Abs(demon1[5] - demon2[5]);
+        //Debug.Log(match);
 
         //sixth Rule
         // Rule for Invidia e Avidit�: high greed goes with low envy and high envy goes with low greed
-        int six_rule_1half = (Math.Abs(demon1[5] - demon2[3]) + 1) / 2;
-        int six_rule_2half = (Math.Abs(demon2[5] - demon1[3]) + 1) / 2;
-        match += six_rule_1half + six_rule_2half;
-        Debug.Log(match);
+        //int six_rule_1half = (Math.Abs(demon1[5] - demon2[2]) + 1) / 2;
+        //int six_rule_2half = (Math.Abs(demon2[5] - demon1[2]) + 1) / 2;
+        //match += six_rule_1half + six_rule_2half;
+        //Debug.Log(match);
 
         //seventh Rule
         // Rule for Lussuria e Pigrizia: high lust goes with low sloth and high sloth goes with low lust
-        int sev_rule_1half = (Math.Abs(demon1[0] - demon2[4]) + 1) / 2;
-        int sev_rule_2half = (Math.Abs(demon2[0] - demon1[4]) + 1) / 2;
+        int sev_rule_1half = (Math.Abs(demon1[6] - demon2[4]) + 1) / 2;
+        int sev_rule_2half = (Math.Abs(demon2[6] - demon1[4]) + 1) / 2;
         match += sev_rule_1half + sev_rule_2half;
         Debug.Log(match);
 
 
         // Normalize the match value to 100%
-        double normalizedMatch = (match * 100)/70;
+        double normalizedMatch = (match * 100)/40;
         Debug.Log(normalizedMatch);
 
         return (int)normalizedMatch;
