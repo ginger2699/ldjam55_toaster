@@ -221,9 +221,9 @@ GameObject:
   - component: {fileID: 3620730447921504268}
   - component: {fileID: 8365401179359237525}
   - component: {fileID: 5402095223892462767}
-  - component: {fileID: 9070659354047093268}
   - component: {fileID: 5159721201867279593}
   - component: {fileID: 6501005191058325726}
+  - component: {fileID: 514216242248871237}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -335,20 +335,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8365401179359237525}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
---- !u!114 &9070659354047093268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5892302803744811521}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e15c5b4a13ba07347869699e25d1f37e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  message: awawa
+      m_Calls:
+      - m_Target: {fileID: 514216242248871237}
+        m_TargetAssemblyTypeName: DemonCard, Assembly-CSharp
+        m_MethodName: onClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!50 &5159721201867279593
 Rigidbody2D:
   serializedVersion: 4
@@ -422,6 +421,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &514216242248871237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5892302803744811521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af9f2475267eac147b35313c1c4664e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardID: 0
+  cardBack: {fileID: 0}
+  cardFront: {fileID: 0}
+  matchedDemon: {fileID: 0}
 --- !u!1 &8705559048614737045
 GameObject:
   m_ObjectHideFlags: 0

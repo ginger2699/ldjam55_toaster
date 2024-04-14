@@ -9,8 +9,9 @@ public class DemonCard : MonoBehaviour
     public Sprite cardFront; // The sprite for the front of the card
     public DemonProfile d_profile;
 
-    public DemonCard matchedDemon;
-
+    public GameObject matchedDemon;
+    private static List<Color> coloredPairs = new List<Color>();
+    private int indexColor;
     private bool isSelected = false;
     private bool isPaired = false;
     private Image image;
@@ -23,7 +24,7 @@ public class DemonCard : MonoBehaviour
         image.sprite = cardBack; // Set the initial sprite to the card back
     }
 
-    public void OnClick()
+    public void onClick()
     {
         if (!isSelected && !isPaired && selectedCards.Count < 2)
         {
@@ -31,6 +32,8 @@ public class DemonCard : MonoBehaviour
             selectedCards.Add(this);
             //graphic effect to highlight
             //image.sprite = cardFront; // Show the front of the card
+            gameObject.GetComponent<Image>().color = Color.green;
+
         }
         else if (isSelected && selectedCards.Contains(this))
         {
@@ -38,14 +41,22 @@ public class DemonCard : MonoBehaviour
             selectedCards.Remove(this);
             //graphic effect to remove highlight
             //image.sprite = cardBack; // Show the back of the card
+            gameObject.GetComponent<Image>().color = Color.white;
+
         }
         //remove couple
-        else if (!isSelected && matchedDemon != null)
+        else if (isPaired && matchedDemon != null)
         {
-            matchedDemon.matchedDemon == null;
-            matchedDemon.isPaired = false;
-            matchedDemon == null;
+            matchedDemon.GetComponent<DemonCard>().matchedDemon = null;
+            matchedDemon.GetComponent<DemonCard>().isPaired = false;
+            matchedDemon.GetComponent<DemonCard>().isSelected = false;
+            matchedDemon.gameObject.GetComponent<Image>().color = Color.white;
+
+            matchedDemon = null;
             isPaired = false;
+            isSelected = false;
+            gameObject.GetComponent<Image>().color = Color.white;
+
             //graphic effect
         }
 
@@ -57,8 +68,10 @@ public class DemonCard : MonoBehaviour
                 // Cards form a pair
                 isPaired = true;
                 selectedCards[0].isPaired = true;
-                matchedDemon = selectedCards[0];
-                selectedCards[0].matchedDemon = this;
+                matchedDemon = selectedCards[0].gameObject;
+                selectedCards[0].matchedDemon = this.gameObject;
+                gameObject.GetComponent<Image>().color = Color.red;
+                matchedDemon.GetComponent<Image>().color = Color.red;
                 selectedCards.Clear(); // Clear selected cards
             }
         }

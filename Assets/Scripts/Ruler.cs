@@ -23,38 +23,36 @@ public class Ruler : MonoBehaviour
     {
         int match = 0;
 
-        //public enum Sin { Pigrizia, Superbia, Ira, Avidità, Lussuria, Invidia, Gola };
+        //public enum Sin { Pigrizia, Superbia, Ira, Aviditï¿½, Lussuria, Invidia, Gola };
 
         //First Rule
-        // Rule matching gluttony
+        // Rule matching gluttony: high gluttony goes with high gluttony (same with low)
         match += 10 - Math.Abs(demon1[6] - demon2[6]);
 
         //Second Rule
-        // Rule for Superbia e Invidia
-        int sec_rule_1half = (Math.Abs(demon1[1] - demon2[5]) + 1) / 2;
-        int sec_rule_2half = (Math.Abs(demon2[1] - demon1[5]) + 1) / 2;
-        match += sec_rule_1half + sec_rule_2half;
+        // Rule for Superbia: high pride goes with low pride and viceversa 
+        match += Math.Abs(demon1[1] - demon2[1]) + 1;
 
         //Third Rule
-        // Rule for Ira
+        // Rule for Wrath: high wrath goes with low wrath and viceversa
         match += Math.Abs(demon1[2] - demon2[2]) + 1;
 
         //Fourth Rule
-        // Rule for Lussuria
+        // Rule for Lussuria: high lust goes with high lust (same with low)
         match += 10 - Math.Abs(demon1[4] - demon2[4]);
 
-        //fiveth Rule
-        // Rule for Invidia
+        //Fifth Rule
+        // Rule for Invidia: high envy goes with high envy (same with low)
         match += 10 - Math.Abs(demon1[5] - demon2[5]);
 
         //sixth Rule
-        // Rule for Superbia e Avidità
-        int six_rule_1half = (Math.Abs(demon1[1] - demon2[3]) + 1) / 2;
-        int six_rule_2half = (Math.Abs(demon2[1] - demon1[3]) + 1) / 2;
+        // Rule for Invidia e Aviditï¿½: high greed goes with low envy and high envy goes with low greed
+        int six_rule_1half = (Math.Abs(demon1[5] - demon2[3]) + 1) / 2;
+        int six_rule_2half = (Math.Abs(demon2[5] - demon1[3]) + 1) / 2;
         match += six_rule_1half + six_rule_2half;
 
         //seventh Rule
-        // Rule for Lussuria e Pigrizia
+        // Rule for Lussuria e Pigrizia: high lust goes with low sloth and high sloth goes with low lust
         int sev_rule_1half = (Math.Abs(demon1[0] - demon2[4]) + 1) / 2;
         int sev_rule_2half = (Math.Abs(demon2[0] - demon1[4]) + 1) / 2;
         match += sev_rule_1half + sev_rule_2half;

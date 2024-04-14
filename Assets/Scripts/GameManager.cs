@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -49,7 +50,7 @@ public class GameManager : MonoBehaviour
         {
             DemonProfile newDemon = new DemonProfile();
             newDemon.d_name = demonNames[randomIndices[i]];
-            newDemon.age = UnityEngine.Random.Range(20,8000);
+            newDemon.age = UnityEngine.Random.Range(20,7000);
 
             demons_profile.Add(newDemon); 
 
@@ -57,6 +58,9 @@ public class GameManager : MonoBehaviour
             Debug.Log("Age: " + newDemon.age); 
  
             newDemon.GenerateSinsLevels();
+            demons_cards[i].GetComponent<DemonCard>().d_profile = newDemon;
+            demons_cards[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = (newDemon.d_name); 
+            demons_cards[i].transform.GetChild(3).gameObject.GetComponent<TMP_Text>().text += (": " + newDemon.age.ToString()); 
         }
 
     }
