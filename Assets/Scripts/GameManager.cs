@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
                 Color current_color = colors[j];
                 for (int k = 1; k < current_level; k++)
                 {
-                    GameObject cube = Instantiate(CubePrefab, new Vector3(0, 0, 0), Quaternion.identity, current_sin.transform);
+                    GameObject cube = Instantiate(CubePrefab, current_sin.transform);
                     cube.GetComponent<Image>().color = current_color;
                 }
                 //demons_sins[i].transform.GetChild(j).gameObject.GetComponent<TMP_Text>().text = newDemon.sins[j].ToString();
