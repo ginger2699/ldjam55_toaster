@@ -8,7 +8,6 @@ using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using System.IO;
 using Unity.VisualScripting;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class GameManager : MonoBehaviour
 {

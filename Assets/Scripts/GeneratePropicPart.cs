@@ -31,7 +31,7 @@ public class GeneratePropicParts : MonoBehaviour
     private bool drawGreg = false;
 
 
-    public void Start()
+    public void Awake()
     {
         image = gameObject.GetComponent<Image>();
 
@@ -107,7 +107,7 @@ public class GeneratePropicParts : MonoBehaviour
             else
                 sb.Append("default");
         }
-
+        Debug.Log(sb.ToString());
         sprite = Resources.Load<Sprite>(sb.ToString());
 
         image.sprite = sprite;
