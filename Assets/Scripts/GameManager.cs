@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using System.IO;
 using Unity.VisualScripting;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class GameManager : MonoBehaviour
 {
@@ -53,6 +54,8 @@ public class GameManager : MonoBehaviour
     public GameObject nextRoundButton;
     //summon button
     public GameObject summonButton;
+    //content
+    public GameObject content;
 
     public List<Color> colors = new List<Color>();
     public enum Sin { wrath, gluttony, greed, pride, lust, envy, sloth};
@@ -153,6 +156,7 @@ public class GameManager : MonoBehaviour
         List<DemonProfile> demons_selected = new List<DemonProfile>();
         summonButton.SetActive(false);
         nextRoundButton.SetActive(true);
+        content.SetActive(false);
         nextRoundButton.GetComponent<Button>().interactable = false;
         for(int i = 0;i< demons_cards.Count; i++)
         {

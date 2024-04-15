@@ -30,10 +30,10 @@ public class DemonCard : MonoBehaviour
 
     public void ResetNextRound()
     {
-        coloredPairs = new List<Color>() { new Color(131f/255f, 56f/255f, 236f/255f, 0.7f),
-                                                new Color(255 / 255f, 0f / 255f, 110f / 255f, 0.7f),
-                                                    new Color(251f / 255f, 86f / 255f, 7f / 255f, 0.7f),
-                                                        new Color(255f / 255f, 190f / 255f, 11f / 255f, 0.7f)};
+        coloredPairs = new List<Color>() { new Color(131f/255f, 56f/255f, 236f/255f, 0.8f),
+                                                new Color(255 / 255f, 0f / 255f, 110f / 255f, 0.8f),
+                                                    new Color(47f / 255f, 119f / 255f, 227f / 255f, 0.8f),
+                                                        new Color(255f / 255f, 190f / 255f, 11f / 255f, 0.8f)};
         selectedCards.Clear();
     }
 
