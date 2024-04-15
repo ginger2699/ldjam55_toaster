@@ -165,6 +165,11 @@ public class GameManager : MonoBehaviour
                 numCouple++;
                 demons_selected.Add(current_card.d_profile);
                 demons_selected.Add(current_card.matchedDemon.GetComponent<DemonCard>().d_profile);
+                bool isGreg = false;
+                if (current_card.d_profile.isGreg || current_card.matchedDemon.GetComponent<DemonCard>().d_profile.isGreg)
+                {
+                    isGreg = true;
+                }
                 int matchability = matchMaking(current_card.d_profile.sins.ToList(), demons_selected[demons_selected.Count-1].sins.ToList());
                 Debug.Log("Matchability: " + matchability);
                 GameObject resultCouplePanel = pointsPanel.transform.GetChild(numCouple - 1).gameObject;
@@ -172,14 +177,31 @@ public class GameManager : MonoBehaviour
                 RecreatePropics(demons_cards[i], current_card.matchedDemon, resultCouplePanel.transform.GetChild(1).gameObject);
                 resultCouplePanel.SetActive(true);
                 float numOfHearts = matchability / 20;
-                Debug.Log("Hearts: " + numOfHearts.ToString());
-                for (int j = 0; j < numOfHearts; j++)
+                if (isGreg)
                 {
-                    resultCouplePanel.transform.GetChild(2).GetChild(j).gameObject.GetComponent<Image>().sprite = fullheart;
-                    yield return new WaitForSeconds(0.5f); // Wait for 1.5 seconds
+                    Debug.Log("greeeg: " + numOfHearts.ToString());
+                    for (int j = 0; j < 5; j++)
+                    {
+                        resultCouplePanel.transform.GetChild(2).GetChild(j).gameObject.GetComponent<Image>().color = Color.black;
+                        yield return new WaitForSeconds(0.5f); // Wait for 1.5 seconds
 
+                    }
                 }
-                if (numOfHearts == 5)
+                else
+                {
+                    Debug.Log("Hearts: " + numOfHearts.ToString());
+                    for (int j = 0; j < numOfHearts; j++)
+                    {
+                        resultCouplePanel.transform.GetChild(2).GetChild(j).gameObject.GetComponent<Image>().sprite = fullheart;
+                        yield return new WaitForSeconds(0.5f); // Wait for 1.5 seconds
+
+                    }
+                }
+                if (isGreg)
+                {
+                    resultCouplePanel.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = "Grrrreggg";
+                }
+                else if (numOfHearts == 5)
                 {
                     resultCouplePanel.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = "Perfect Match!";
                 }

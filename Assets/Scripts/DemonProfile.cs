@@ -102,10 +102,17 @@ public class DemonProfile
 
     public void GenerateSinsLevels(){
         int i = 0;
-        foreach (int sin in sins)
+        if(isGreg)
         {
-            sins[i] = UnityEngine.Random.Range(1, 11);
-            i++;
+            sins = new int[7] { 10, 10, 10, 10, 10, 10, 10 };
+        }
+        else
+        {
+            foreach (int sin in sins)
+            {
+                sins[i] = UnityEngine.Random.Range(1, 11);
+                i++;
+            }
         }
         Debug.Log("Sins: " + sins[0].ToString() + ", " + sins[1].ToString() + ", " + sins[2].ToString() + ", " + sins[3].ToString() + ", " + sins[4].ToString() + ", " + sins[5].ToString() + ", " + sins[6].ToString());
     }
