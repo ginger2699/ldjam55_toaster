@@ -45,6 +45,8 @@ public class GameManager : MonoBehaviour
     //profile of demons
     public List<DemonProfile> demons_profile;
     //public List<Couple> couples;
+    public Sprite fullheart;
+    public Sprite emptyheart;
 
     public List<Color> colors = new List<Color>();
     public enum Sin { wrath, gluttony, greed, pride, lust, envy, sloth};
@@ -114,25 +116,36 @@ public class GameManager : MonoBehaviour
     {
         pointsPanel.SetActive(true);
         pointsRound = 0;
+        int numCouple = 0;
         List<DemonProfile> demons_selected = new List<DemonProfile>();
         for(int i = 0;i< demons_cards.Count; i++)
         {
             DemonCard current_card = demons_cards[i].GetComponent<DemonCard>();
             if (demons_selected.Find(x => x == current_card.d_profile) == null)
             {
+                numCouple++;
                 demons_selected.Add(current_card.d_profile);
                 demons_selected.Add(current_card.matchedDemon.GetComponent<DemonCard>().d_profile);
                 int matchability = matchMaking(current_card.d_profile.sins.ToList(), demons_selected[demons_selected.Count-1].sins.ToList());
                 Debug.Log("Matchability: " + matchability);
-                pointsPanel.transform.GetChild(i + 1).gameObject.SetActive(true);
-                pointsPanel.transform.GetChild(i+1).gameObject.GetComponent<TMP_Text>().text = (i+1).ToString()+ "° Couple: " + matchability.ToString() + "% match";
+                GameObject resultCouplePanel = pointsPanel.transform.GetChild(numCouple - 1).gameObject;
+                resultCouplePanel.SetActive(true);
+                float numOfHearts = matchability / 20;
+                Debug.Log("Hearts: " + numOfHearts.ToString());
+                for (int j = 0; j < numOfHearts; j++)
+                {
+                    resultCouplePanel.transform.GetChild(2).GetChild(j).gameObject.GetComponent<Image>().sprite = fullheart;
+                    yield return new WaitForSeconds(0.5f); // Wait for 1.5 seconds
+
+                }
+                //pointsPanel.transform.GetChild(numCouple-1).gameObject.GetComponent<TMP_Text>().text = (i+1).ToString()+ "° Couple: " + matchability.ToString() + "% match";
                 pointsRound += matchability;
-                yield return new WaitForSeconds(1.5f); // Wait for 1.5 seconds
+                yield return new WaitForSeconds(1f); // Wait for 1.5 seconds
             }
         }
 
-        pointsPanel.transform.GetChild(5).gameObject.SetActive(true);
-        pointsPanel.transform.GetChild(5).gameObject.GetComponent<TMP_Text>().text = "Final Score: " + pointsRound.ToString();
+        //pointsPanel.transform.GetChild(5).gameObject.SetActive(true);
+        //pointsPanel.transform.GetChild(5).gameObject.GetComponent<TMP_Text>().text = "Final Score: " + pointsRound.ToString();
     }
     public void StartSummonDate()
     {
