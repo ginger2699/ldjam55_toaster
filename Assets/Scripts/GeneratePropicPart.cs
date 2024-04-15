@@ -26,6 +26,7 @@ public class GeneratePropicParts : MonoBehaviour
     private string partName = "";
     private int numParts = 0;
     private int curPartNumber = 0;
+    private Color color;
     private bool isGreg = false;
     private bool drawGreg = false;
 
@@ -60,7 +61,7 @@ public class GeneratePropicParts : MonoBehaviour
                 break;
             case PartType.EYES:
                 partName = "eyes";
-                numParts = 13;
+                numParts = 14;
                 break;
             case PartType.HORNS:
                 partName = "horns";
@@ -72,6 +73,12 @@ public class GeneratePropicParts : MonoBehaviour
         }
     }
 
+    public void setColor(Color value)
+    {
+        print(value);
+        color = value;
+    }
+
     public void setGreg(bool value)
     {
         drawGreg = value;
@@ -81,6 +88,9 @@ public class GeneratePropicParts : MonoBehaviour
     {
         if (!isGreg)
         {
+            if (partName != "eyes" && partName != "mouth")
+                image.color = color;
+
             curPartNumber = Random.Range(1, numParts + 1);
 
             if (curPartNumber < 10)
@@ -107,7 +117,6 @@ public class GeneratePropicParts : MonoBehaviour
 
     private void ResetPath()
     {
-        print(sb);
         sb.Clear();
         sb.Append("PropicParts/");
     }

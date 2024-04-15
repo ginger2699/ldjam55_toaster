@@ -10,6 +10,7 @@ public class DemonProfile
     public string age;
     public int[] sins = new int[7];
     public Image profile_img;
+    public Color color;
     public bool isGreg = false;
 
     private string[] names = new string[]{
@@ -90,6 +91,7 @@ public class DemonProfile
     {
         d_name = generateName();
         age = Random.Range(20, 7000).ToString();
+        color = new Color(Random.Range(0.5f, 1f), Random.Range(0.3f, 1f), Random.Range(0f, 1f), 1f);
         if (Random.Range(0, 200) == 0)
         {
             isGreg = true;
