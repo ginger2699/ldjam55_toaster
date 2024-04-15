@@ -96,7 +96,10 @@ public class GameManager : MonoBehaviour
             else
                 demons_cards[i].transform.GetChild(10).gameObject.GetComponent<GeneratePropicParts>().setGreg(false);
             for (int propicPart = 3; propicPart < 11; propicPart++)
+            {
+                demons_cards[i].transform.GetChild(propicPart).gameObject.GetComponent<GeneratePropicParts>().setColor(newDemon.color);
                 demons_cards[i].transform.GetChild(propicPart).gameObject.GetComponent<GeneratePropicParts>().GeneratePropics();
+            }
             
             //show graphic sins levels
             for (int j = 0; j < 7; j++)
@@ -205,7 +208,9 @@ public class GameManager : MonoBehaviour
         for (int i=0; i< 8; i++)
         {
             couplePics.transform.GetChild(0).GetChild(i).gameObject.GetComponent<Image>().sprite = first_demon.transform.GetChild(i+3).GetComponent<Image>().sprite;
+            couplePics.transform.GetChild(0).GetChild(i).gameObject.GetComponent<Image>().color = first_demon.transform.GetChild(i + 3).GetComponent<Image>().color;
             couplePics.transform.GetChild(1).GetChild(i).gameObject.GetComponent<Image>().sprite = second_demon.transform.GetChild(i+3).GetComponent<Image>().sprite;
+            couplePics.transform.GetChild(1).GetChild(i).gameObject.GetComponent<Image>().color = second_demon.transform.GetChild(i + 3).GetComponent<Image>().color;
         }
 
     }
