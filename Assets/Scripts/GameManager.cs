@@ -105,6 +105,23 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private void ClearSins()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            DemonProfile currentDemon = demons_profile[i];
+            for (int j = 0; j < 7; j++)
+            {
+                int current_level = currentDemon.sins[j];
+                GameObject current_sin = demons_sins[i].transform.GetChild(j).gameObject;
+                Color current_color = colors[j];
+                for (int k = 0; k < current_level - 1; k++)
+                    Destroy(current_sin.transform.GetChild(k).gameObject);
+                //demons_sins[i].transform.GetChild(j).gameObject.GetComponent<TMP_Text>().text = newDemon.sins[j].ToString();
+            }
+        }
+    }
+
     public int CalculateMatchOld(DemonProfile demon1, DemonProfile demon2){
 
         double matchLevel = 0;
@@ -209,7 +226,11 @@ public class GameManager : MonoBehaviour
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ClearSins();
+            demons_profile.Clear();
             StartRound();
+        }
     }
 
     // Function to generate random indices within a range
