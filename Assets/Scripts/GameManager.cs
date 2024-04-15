@@ -401,6 +401,11 @@ public class GameManager : MonoBehaviour
             demons_profile.Clear();
             StartRound();
         }*/
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // Quit the application
+            Application.Quit();
+        }
     }
 
     public void NextRound()
