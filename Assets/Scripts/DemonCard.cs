@@ -10,11 +10,12 @@ public class DemonCard : MonoBehaviour
     public DemonProfile d_profile;
 
     public GameObject matchedDemon;
-    private static List<Color> coloredPairs = new List<Color>() { new Color(131f/255f, 56f/255f, 236f/255f, 0.7f),
-                                                                    new Color(255 / 255f, 0f / 255f, 110f / 255f, 0.7f),
-                                                                        new Color(251f / 255f, 86f / 255f, 7f / 255f, 0.7f),
-                                                                            new Color(255f / 255f, 190f / 255f, 11f / 255f, 0.7f)};
+    private static List<Color> coloredPairs = new List<Color>() { new Color(131f/255f, 56f/255f, 236f/255f, 0.8f),
+                                                                    new Color(255 / 255f, 0f / 255f, 110f / 255f, 0.8f),
+                                                                        new Color(47f / 255f, 119f / 255f, 227f / 255f, 0.8f),
+                                                                            new Color(255f / 255f, 190f / 255f, 11f / 255f, 0.8f)};
     //private int indexColor= 0;
+    private static Color newGreen = new Color(158f/255f, 227f/255f, 47f / 255f, 0.8f);
     public bool isSelected = false;
     public bool isPaired = false;
     private Image image;
@@ -44,7 +45,7 @@ public class DemonCard : MonoBehaviour
             selectedCards.Add(this);
             //graphic effect to highlight
             //image.sprite = cardFront; // Show the front of the card
-            gameObject.transform.GetChild(0).gameObject.GetComponent<Image>().color = Color.green;
+            gameObject.transform.GetChild(0).gameObject.GetComponent<Image>().color = newGreen;
 
         }
         else if (isSelected && selectedCards.Contains(this))
@@ -68,7 +69,7 @@ public class DemonCard : MonoBehaviour
             isPaired = false;
             isSelected = false;
             //add color back into the list
-            coloredPairs.Add(gameObject.GetComponent<Image>().color);
+            coloredPairs.Add(gameObject.transform.GetChild(0).GetComponent<Image>().color);
 
             gameObject.transform.GetChild(0).gameObject.GetComponent<Image>().color = Color.white;
 

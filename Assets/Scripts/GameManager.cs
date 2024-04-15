@@ -440,7 +440,7 @@ public class GameManager : MonoBehaviour
             currentCard.isPaired = false;
             currentCard.isSelected = false;
             currentCard.matchedDemon = null;
-            currentCard.gameObject.GetComponent<Image>().color = Color.white;
+            currentCard.transform.GetChild(0).gameObject.GetComponent<Image>().color = Color.white;
             //currentCard.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = currentCard.cardBack;
         }
         demons_cards[0].GetComponent<DemonCard>().ResetNextRound();
