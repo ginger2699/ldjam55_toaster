@@ -10,7 +10,10 @@ public class DemonCard : MonoBehaviour
     public DemonProfile d_profile;
 
     public GameObject matchedDemon;
-    private static List<Color> coloredPairs = new List<Color>() { Color.yellow, Color.magenta, Color.cyan, Color.blue};
+    private static List<Color> coloredPairs = new List<Color>() { new Color(131f/255f, 56f/255f, 236f/255f, 0.7f),
+                                                                    new Color(255 / 255f, 0f / 255f, 110f / 255f, 0.7f),
+                                                                        new Color(251f / 255f, 86f / 255f, 7f / 255f, 0.7f),
+                                                                            new Color(255f / 255f, 190f / 255f, 11f / 255f, 0.7f)};
     //private int indexColor= 0;
     public bool isSelected = false;
     public bool isPaired = false;
@@ -26,7 +29,10 @@ public class DemonCard : MonoBehaviour
 
     public void ResetNextRound()
     {
-        coloredPairs = new List<Color>() { Color.yellow, Color.magenta, Color.cyan, Color.blue };
+        coloredPairs = new List<Color>() { new Color(131f/255f, 56f/255f, 236f/255f, 0.7f),
+                                                new Color(255 / 255f, 0f / 255f, 110f / 255f, 0.7f),
+                                                    new Color(251f / 255f, 86f / 255f, 7f / 255f, 0.7f),
+                                                        new Color(255f / 255f, 190f / 255f, 11f / 255f, 0.7f)};
         selectedCards.Clear();
     }
 
@@ -38,7 +44,7 @@ public class DemonCard : MonoBehaviour
             selectedCards.Add(this);
             //graphic effect to highlight
             //image.sprite = cardFront; // Show the front of the card
-            gameObject.GetComponent<Image>().color = Color.green;
+            gameObject.transform.GetChild(0).gameObject.GetComponent<Image>().color = Color.green;
 
         }
         else if (isSelected && selectedCards.Contains(this))
@@ -47,7 +53,7 @@ public class DemonCard : MonoBehaviour
             selectedCards.Remove(this);
             //graphic effect to remove highlight
             //image.sprite = cardBack; // Show the back of the card
-            gameObject.GetComponent<Image>().color = Color.white;
+            gameObject.transform.GetChild(0).gameObject.GetComponent<Image>().color = Color.white;
 
         }
         //remove couple
@@ -56,15 +62,15 @@ public class DemonCard : MonoBehaviour
             matchedDemon.GetComponent<DemonCard>().matchedDemon = null;
             matchedDemon.GetComponent<DemonCard>().isPaired = false;
             matchedDemon.GetComponent<DemonCard>().isSelected = false;
-            matchedDemon.gameObject.GetComponent<Image>().color = Color.white;
+            matchedDemon.gameObject.transform.GetChild(0).gameObject.GetComponent<Image>().color = Color.white;
 
             matchedDemon = null;
             isPaired = false;
             isSelected = false;
             //add color back into the list
             coloredPairs.Add(gameObject.GetComponent<Image>().color);
-            
-            gameObject.GetComponent<Image>().color = Color.white;
+
+            gameObject.transform.GetChild(0).gameObject.GetComponent<Image>().color = Color.white;
 
             //graphic effect
         }
@@ -79,8 +85,8 @@ public class DemonCard : MonoBehaviour
                 selectedCards[0].isPaired = true;
                 matchedDemon = selectedCards[0].gameObject;
                 selectedCards[0].matchedDemon = this.gameObject;
-                gameObject.GetComponent<Image>().color = coloredPairs[0];
-                matchedDemon.GetComponent<Image>().color = coloredPairs[0];
+                gameObject.transform.GetChild(0).gameObject.GetComponent<Image>().color = coloredPairs[0];
+                matchedDemon.transform.GetChild(0).GetComponent<Image>().color = coloredPairs[0];
                 coloredPairs.RemoveAt(0);
                 selectedCards.Clear(); // Clear selected cards
             }

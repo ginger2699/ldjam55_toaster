@@ -89,13 +89,13 @@ public class GameManager : MonoBehaviour
  
             newDemon.GenerateSinsLevels();
             demons_cards[i].GetComponent<DemonCard>().d_profile = newDemon;
-            demons_cards[i].transform.GetChild(1).gameObject.GetComponent<TMP_Text>().text = (newDemon.d_name); 
-            demons_cards[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = ("Age: " + newDemon.age);
+            demons_cards[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = (newDemon.d_name); 
+            demons_cards[i].transform.GetChild(3).gameObject.GetComponent<TMP_Text>().text = ("Age: " + newDemon.age);
             if (newDemon.isGreg)
-                demons_cards[i].transform.GetChild(10).gameObject.GetComponent<GeneratePropicParts>().setGreg(true);
+                demons_cards[i].transform.GetChild(11).gameObject.GetComponent<GeneratePropicParts>().setGreg(true);
             else
-                demons_cards[i].transform.GetChild(10).gameObject.GetComponent<GeneratePropicParts>().setGreg(false);
-            for (int propicPart = 3; propicPart < 11; propicPart++)
+                demons_cards[i].transform.GetChild(11).gameObject.GetComponent<GeneratePropicParts>().setGreg(false);
+            for (int propicPart = 4; propicPart < 12; propicPart++)
                 demons_cards[i].transform.GetChild(propicPart).gameObject.GetComponent<GeneratePropicParts>().GeneratePropics();
             
             //show graphic sins levels
@@ -204,8 +204,8 @@ public class GameManager : MonoBehaviour
     {
         for (int i=0; i< 8; i++)
         {
-            couplePics.transform.GetChild(0).GetChild(i).gameObject.GetComponent<Image>().sprite = first_demon.transform.GetChild(i+3).GetComponent<Image>().sprite;
-            couplePics.transform.GetChild(1).GetChild(i).gameObject.GetComponent<Image>().sprite = second_demon.transform.GetChild(i+3).GetComponent<Image>().sprite;
+            couplePics.transform.GetChild(0).GetChild(i).gameObject.GetComponent<Image>().sprite = first_demon.transform.GetChild(i+4).GetComponent<Image>().sprite;
+            couplePics.transform.GetChild(1).GetChild(i).gameObject.GetComponent<Image>().sprite = second_demon.transform.GetChild(i+4).GetComponent<Image>().sprite;
         }
 
     }
