@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using System.IO;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
@@ -48,6 +49,11 @@ public class GameManager : MonoBehaviour
     public Sprite fullheart;
     public Sprite emptyheart;
 
+    //next round button
+    public GameObject nextRoundButton;
+    //summon button
+    public GameObject summonButton;
+
     public List<Color> colors = new List<Color>();
     public enum Sin { wrath, gluttony, greed, pride, lust, envy, sloth};
     // Start is called before the first frame update
@@ -68,12 +74,13 @@ public class GameManager : MonoBehaviour
     }
     public void StartRound()
     {
-        List<int> randomIndices = GenerateRandomIndices(0, demonNames.Count, 8);
+        //List<int> randomIndices = GenerateRandomIndices(0, demonNames.Count, 8);
         for(int i = 0; i < 8; i++)
         {
             DemonProfile newDemon = new DemonProfile();
-            newDemon.d_name = demonNames[randomIndices[i]];
-            newDemon.age = UnityEngine.Random.Range(20,7000);
+            newDemon.Init();
+            //newDemon.d_name = demonNames[randomIndices[i]];
+            //newDemon.age = UnityEngine.Random.Range(20,7000);
 
             demons_profile.Add(newDemon); 
 
@@ -82,8 +89,14 @@ public class GameManager : MonoBehaviour
  
             newDemon.GenerateSinsLevels();
             demons_cards[i].GetComponent<DemonCard>().d_profile = newDemon;
-            demons_cards[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = (newDemon.d_name); 
-            demons_cards[i].transform.GetChild(3).gameObject.GetComponent<TMP_Text>().text = ("Age: " + newDemon.age.ToString());
+            demons_cards[i].transform.GetChild(1).gameObject.GetComponent<TMP_Text>().text = (newDemon.d_name); 
+            demons_cards[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = ("Age: " + newDemon.age);
+            if (newDemon.isGreg)
+                demons_cards[i].transform.GetChild(10).gameObject.GetComponent<GeneratePropicParts>().setGreg(true);
+            else
+                demons_cards[i].transform.GetChild(10).gameObject.GetComponent<GeneratePropicParts>().setGreg(false);
+            for (int propicPart = 3; propicPart < 11; propicPart++)
+                demons_cards[i].transform.GetChild(propicPart).gameObject.GetComponent<GeneratePropicParts>().GeneratePropics();
             
             //show graphic sins levels
             for (int j = 0; j < 7; j++)
@@ -101,6 +114,24 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+    private void ClearSins()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            DemonProfile currentDemon = demons_profile[i];
+            for (int j = 0; j < 7; j++)
+            {
+                int current_level = currentDemon.sins[j];
+                GameObject current_sin = demons_sins[i].transform.GetChild(j).gameObject;
+                Color current_color = colors[j];
+                for (int k = 0; k < current_level - 1; k++)
+                    Destroy(current_sin.transform.GetChild(k).gameObject);
+                //demons_sins[i].transform.GetChild(j).gameObject.GetComponent<TMP_Text>().text = newDemon.sins[j].ToString();
+            }
+        }
+    }
+
     public int CalculateMatchOld(DemonProfile demon1, DemonProfile demon2){
 
         double matchLevel = 0;
@@ -118,6 +149,9 @@ public class GameManager : MonoBehaviour
         pointsRound = 0;
         int numCouple = 0;
         List<DemonProfile> demons_selected = new List<DemonProfile>();
+        summonButton.SetActive(false);
+        nextRoundButton.SetActive(true);
+        nextRoundButton.GetComponent<Button>().interactable = false;
         for(int i = 0;i< demons_cards.Count; i++)
         {
             DemonCard current_card = demons_cards[i].GetComponent<DemonCard>();
@@ -129,6 +163,8 @@ public class GameManager : MonoBehaviour
                 int matchability = matchMaking(current_card.d_profile.sins.ToList(), demons_selected[demons_selected.Count-1].sins.ToList());
                 Debug.Log("Matchability: " + matchability);
                 GameObject resultCouplePanel = pointsPanel.transform.GetChild(numCouple - 1).gameObject;
+                
+                RecreatePropics(demons_cards[i], current_card.matchedDemon, resultCouplePanel.transform.GetChild(1).gameObject);
                 resultCouplePanel.SetActive(true);
                 float numOfHearts = matchability / 20;
                 Debug.Log("Hearts: " + numOfHearts.ToString());
@@ -138,14 +174,40 @@ public class GameManager : MonoBehaviour
                     yield return new WaitForSeconds(0.5f); // Wait for 1.5 seconds
 
                 }
+                if (numOfHearts == 5)
+                {
+                    resultCouplePanel.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = "Perfect Match!";
+                }
+                else if (numOfHearts >= 3)
+                {
+                    resultCouplePanel.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = "Good Match";
+                }
+                else if (numOfHearts >= 2)
+                {
+                    resultCouplePanel.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = "Mmh...not quite";
+                }
+                else
+                {
+                    resultCouplePanel.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = "That's bad!";
+                }
                 //pointsPanel.transform.GetChild(numCouple-1).gameObject.GetComponent<TMP_Text>().text = (i+1).ToString()+ "° Couple: " + matchability.ToString() + "% match";
                 pointsRound += matchability;
                 yield return new WaitForSeconds(1f); // Wait for 1.5 seconds
             }
         }
-
+        nextRoundButton.GetComponent<Button>().interactable = true;
         //pointsPanel.transform.GetChild(5).gameObject.SetActive(true);
         //pointsPanel.transform.GetChild(5).gameObject.GetComponent<TMP_Text>().text = "Final Score: " + pointsRound.ToString();
+    }
+
+    public void RecreatePropics(GameObject first_demon, GameObject second_demon, GameObject couplePics) 
+    {
+        for (int i=0; i< 8; i++)
+        {
+            couplePics.transform.GetChild(0).GetChild(i).gameObject.GetComponent<Image>().sprite = first_demon.transform.GetChild(i+3).GetComponent<Image>().sprite;
+            couplePics.transform.GetChild(1).GetChild(i).gameObject.GetComponent<Image>().sprite = second_demon.transform.GetChild(i+3).GetComponent<Image>().sprite;
+        }
+
     }
     public void StartSummonDate()
     {
@@ -331,11 +393,53 @@ public class GameManager : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
-        
+        /*if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ClearSins();
+            demons_profile.Clear();
+            StartRound();
+        }*/
     }
 
+    public void NextRound()
+    {
+        ClearSins();
+        ClearResultScreen();
+        ClearCards();
+        demons_profile.Clear();
+        nextRoundButton.SetActive(false);
+        summonButton.SetActive(true);
+        StartRound();
+    }
+
+    public void ClearResultScreen()
+    {
+        pointsPanel.SetActive(false);
+        for (int i = 0; i < 4; i++)
+        {
+            pointsPanel.transform.GetChild(i).gameObject.SetActive(false);
+            pointsPanel.transform.GetChild(i).GetChild(0).gameObject.GetComponent<TMP_Text>().text = "Matchy Match";
+            for (int j = 0; j < 5; j++)
+            {
+                pointsPanel.transform.GetChild(i).GetChild(2).GetChild(j).gameObject.GetComponent<Image>().sprite = emptyheart;
+            }
+        }
+    }
+    public void ClearCards()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            DemonCard currentCard = demons_cards[i].GetComponent<DemonCard>();
+            currentCard.isPaired = false;
+            currentCard.isSelected = false;
+            currentCard.matchedDemon = null;
+            currentCard.gameObject.GetComponent<Image>().color = Color.white;
+            //currentCard.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = currentCard.cardBack;
+        }
+        demons_cards[0].GetComponent<DemonCard>().ResetNextRound();
+    }
     // Function to generate random indices within a range
     static List<int> GenerateRandomIndices(int min, int max, int count)
     {
@@ -351,57 +455,57 @@ public class GameManager : MonoBehaviour
         }
         return indices;
     }
-    List<string> demonNames = new List<string>
-    {
-        "Azazel",
-        "Belial",
-        "Abaddon",
-        "Mephistopheles",
-        "Lucifer",
-        "Beelzebub",
-        "Leviathan",
-        "Lilith",
-        "Asmodeus",
-        "Belphegor",
-        "Mammon",
-        "Moloch",
-        "Nybbas",
-        "Astaroth",
-        "Behemoth",
-        "Beherit",
-        "Raum",
-        "Baal",
-        "Marchosias",
-        "Barbatos",
-        "Gremory",
-        "Berith",
-        "Malphas",
-        "Marbas",
-        "Shax",
-        "Orobas",
-        "Agares",
-        "Buer",
-        "Sitri",
-        "Vassago",
-        "Zepar",
-        "Dantalion",
-        "Furfur",
-        "Vine",
-        "Gaap",
-        "Haures",
-        "Paimon",
-        "Sallos",
-        "Vepar",
-        "Ronove",
-        "Glasya-Labolas",
-        "Crocell",
-        "Furcas",
-        "Ipos",
-        "Sabnock",
-        "Andras",
-        "Forneus",
-        "Shax",
-        "Vapula",
-        "Zagan"
-    };
+    //List<string> demonNames = new List<string>
+    //{
+    //    "Azazel",
+    //    "Belial",
+    //    "Abaddon",
+    //    "Mephistopheles",
+    //    "Lucifer",
+    //    "Beelzebub",
+    //    "Leviathan",
+    //    "Lilith",
+    //    "Asmodeus",
+    //    "Belphegor",
+    //    "Mammon",
+    //    "Moloch",
+    //    "Nybbas",
+    //    "Astaroth",
+    //    "Behemoth",
+    //    "Beherit",
+    //    "Raum",
+    //    "Baal",
+    //    "Marchosias",
+    //    "Barbatos",
+    //    "Gremory",
+    //    "Berith",
+    //    "Malphas",
+    //    "Marbas",
+    //    "Shax",
+    //    "Orobas",
+    //    "Agares",
+    //    "Buer",
+    //    "Sitri",
+    //    "Vassago",
+    //    "Zepar",
+    //    "Dantalion",
+    //    "Furfur",
+    //    "Vine",
+    //    "Gaap",
+    //    "Haures",
+    //    "Paimon",
+    //    "Sallos",
+    //    "Vepar",
+    //    "Ronove",
+    //    "Glasya-Labolas",
+    //    "Crocell",
+    //    "Furcas",
+    //    "Ipos",
+    //    "Sabnock",
+    //    "Andras",
+    //    "Forneus",
+    //    "Shax",
+    //    "Vapula",
+    //    "Zagan"
+    //};
 }

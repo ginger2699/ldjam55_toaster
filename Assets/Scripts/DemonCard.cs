@@ -12,7 +12,7 @@ public class DemonCard : MonoBehaviour
     public GameObject matchedDemon;
     private static List<Color> coloredPairs = new List<Color>() { Color.yellow, Color.magenta, Color.cyan, Color.blue};
     //private int indexColor= 0;
-    private bool isSelected = false;
+    public bool isSelected = false;
     public bool isPaired = false;
     private Image image;
     private static List<DemonCard> selectedCards = new List<DemonCard>();
@@ -22,6 +22,12 @@ public class DemonCard : MonoBehaviour
         matchedDemon = null;
         image = GetComponent<Image>();
         image.sprite = cardBack; // Set the initial sprite to the card back
+    }
+
+    public void ResetNextRound()
+    {
+        coloredPairs = new List<Color>() { Color.yellow, Color.magenta, Color.cyan, Color.blue };
+        selectedCards.Clear();
     }
 
     public void onClick()
